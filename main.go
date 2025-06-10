@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/vaynedu/protoc-gen-myhttp/parse"
 	"google.golang.org/protobuf/compiler/protogen"
-	"protoc-gen-myhttp/parse"
 )
 
 func main() {

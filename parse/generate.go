@@ -3,8 +3,9 @@ package parse
 import (
 	"bytes"
 	"fmt"
-	myhttp_temlate "protoc-gen-myhttp/template"
 	"text/template"
+
+	myhttp_temlate "github.com/vaynedu/protoc-gen-myhttp/template"
 
 	"google.golang.org/protobuf/compiler/protogen"
 )
