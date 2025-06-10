@@ -1,4 +1,4 @@
-module protoc-gen-myhttp
+module github.com/vaynedu/protoc-gen-myhttp
 
 go 1.23.4
 
