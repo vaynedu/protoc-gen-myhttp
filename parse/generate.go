@@ -8,6 +8,11 @@ import (
 	myhttp_temlate "github.com/vaynedu/protoc-gen-myhttp/template"
 
 	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/proto"
+
+	// 由于原包无法导入，尝试使用新的官方包路径
+	// 修改为正确的导入路径
+	annotations "google.golang.org/genproto/googleapis/api/annotations"
 )
 
 func GenerateFile(gen *protogen.Plugin, file *protogen.File) error {
@@ -52,6 +57,10 @@ type Method struct {
 	RequestType string
 	// 响应类型
 	ResponseType string
+	// 新增字段，保存 HTTP 路径
+	HTTPPath string
+	// 新增字段，保存 HTTP 方法
+	HTTPMethod string
 }
 
 func NewFile(gen *protogen.GeneratedFile, protoFile *protogen.File) *File {
@@ -82,10 +91,27 @@ func (f *File) ParseService(protoSvc *protogen.Service) {
 }
 
 func (f *File) ParseMethod(m *protogen.Method) *Method {
+	httpRule := proto.GetExtension(m.Desc.Options(), annotations.E_Http).(*annotations.HttpRule)
+	httpPath := ""
+	httpMethod := ""
+	if httpRule != nil {
+		switch {
+		case httpRule.GetPost() != "":
+			httpPath = httpRule.GetPost()
+			httpMethod = "POST"
+		case httpRule.GetGet() != "":
+			httpPath = httpRule.GetGet()
+			httpMethod = "GET"
+		// 可以根据需要添加其他 HTTP 方法的处理
+		}
+	}
+
 	return &Method{
 		Name:         m.GoName,
 		RequestType:  m.Input.GoIdent.GoName,
 		ResponseType: m.Output.GoIdent.GoName,
+		HTTPPath:     httpPath,
+		HTTPMethod:   httpMethod,
 	}
 }
 
@@ -101,3 +127,5 @@ func (f *File) Generate() error {
 	f.gen.P(buf.String())
 	return nil
 }
+
+// ... existing code ...
