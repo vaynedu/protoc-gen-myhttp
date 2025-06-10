@@ -9,7 +9,7 @@ package {{.PackageName}}
 
 import (
 	"context"
-	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,6 +49,17 @@ func (s *{{$service.Name}}) {{$method.Name}}(c *gin.Context) {
 		return
 	}
 	c.JSON(200, resp)
+}
+{{end}}
+
+
+// 新增未实现的服务结构体
+type Unimplemented{{$service.Name}}Service struct{}
+
+// 为每个方法提供错误实现
+{{range $method := .Methods}}
+func (u *Unimplemented{{$service.Name}}Service) {{$method.Name}}(ctx context.Context, req *{{$method.RequestType}}) (resp *{{$method.ResponseType}}, err error) {
+	return nil, fmt.Errorf("{{$service.Name}}Service.{{$method.Name}} 方法未实现")
 }
 {{end}}
 
